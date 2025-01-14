@@ -1,0 +1,20 @@
+.html {
+  font-size: 10px;
+}
+
+header {
+  background-color: rgb(65, 29, 105);
+  color: rgb(252, 252, 252);
+}
+
+.main-heading {
+  font-size: 1.5rem;
+  padding: 0.6rem 0;
+}
+
+@media only screen and (width >= 768px) {
+  .main-heading {
+    padding: 0.6 0;
+    font-size: 2rem;
+  }
+}
