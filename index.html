@@ -22,7 +22,48 @@
       </div>
     </header>
     <main class="container">
-      <div data-view="entry-form"></div>
+      <div data-view="entry-form">
+        <h2 class="row entry-title">New Entry</h2>
+
+        <form class="row">
+          <div class="column-half">
+            <img
+              src="images/placeholder-image-square.jpg"
+              alt="placeholder-image-square"
+              class="placeholder-image" />
+          </div>
+          <div class="column-half">
+            <label for="title" class="form-labels">Title</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              required
+              class="input-elements" />
+
+            <label for="img-url" class="form-labels">Photo URL</label>
+            <input
+              type="text"
+              id="img-url"
+              name="img-url"
+              required
+              class="input-elements" />
+          </div>
+
+          <div class="column-full">
+            <label for="notes" class="form-labels">Notes</label>
+            <textarea
+              id="notes"
+              name="notes"
+              required
+              rows="10"
+              class="input-elements">
+            </textarea>
+          </div>
+
+          <input type="submit" value="save" id="submit-btn" />
+        </form>
+      </div>
       <div data-view="entries" class="hidden"></div>
     </main>
     <script src="js/data.js"></script>
