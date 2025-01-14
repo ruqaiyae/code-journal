@@ -48,7 +48,11 @@ header {
   border-radius: 0.2rem;
 }
 
-#submit-btn {
+.justify {
+  justify-content: flex-end;
+}
+
+.submit-btn {
   background-color: rgb(65, 29, 105);
   color: rgb(252, 252, 252);
   text-transform: uppercase;
