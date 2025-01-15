@@ -18,14 +18,15 @@
   <body>
     <header>
       <div class="container">
-        <h1 class="main-heading">Code Journal</h1>
+        <h1 class="column-full main-heading">Code Journal</h1>
       </div>
     </header>
     <main class="container">
       <div data-view="entry-form">
-        <h2 class="row entry-title">New Entry</h2>
+        <h2 class="row column-full entry-main-heading">New Entry</h2>
 
-        <form class="row">
+        <!-- <form class="row"> -->
+        <form class="row hidden">
           <div class="column-half">
             <img
               src="images/placeholder-image-square.jpg"
@@ -66,7 +67,35 @@
           </div>
         </form>
       </div>
-      <div data-view="entries" class="hidden"></div>
+      <!-- <div data-view="entries" class="hidden"> -->
+      <div data-view="entries">
+        <ul>
+          <li class="row">
+            <div class="column-half">
+              <img
+                src="images/placeholder-image-square.jpg"
+                alt="entry-image"
+                class="entry-image" />
+            </div>
+            <div class="column-half entry-content">
+              <h3 class="entry-title">A newer image</h3>
+              <p>A very nice lake!</p>
+            </div>
+          </li>
+          <li class="row">
+            <div class="column-half">
+              <img
+                src="images/placeholder-image-square.jpg"
+                alt="entry-image"
+                class="entry-image" />
+            </div>
+            <div class="column-half entry-content">
+              <h3 class="entry-title">A newer image</h3>
+              <p>A very nice lake!</p>
+            </div>
+          </li>
+        </ul>
+      </div>
     </main>
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>
