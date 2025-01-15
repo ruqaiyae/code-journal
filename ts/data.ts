@@ -5,9 +5,23 @@ interface Data {
   nextEntryId: number;
 }
 
-const data: Data = {
-  view: 'entry-form',
-  entries: [],
-  editing: null,
-  nextEntryId: 1,
-};
+const data: Data = readData();
+
+function writeData(): void {
+  const dataJSON = JSON.stringify(data);
+
+  localStorage.setItem('dataJSON', dataJSON);
+}
+
+function readData(): Data {
+  const stringJSON = localStorage.getItem('dataJSON');
+  if (stringJSON) {
+    return JSON.parse(stringJSON);
+  }
+  return {
+    view: 'entry-form',
+    entries: [],
+    editing: null,
+    nextEntryId: 1,
+  };
+}
