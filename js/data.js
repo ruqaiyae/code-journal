@@ -1,6 +1,6 @@
 'use strict';
 const data = readData();
-function dataToJSON() {
+function writeData() {
   const dataJSON = JSON.stringify(data);
   localStorage.setItem('dataJSON', dataJSON);
 }

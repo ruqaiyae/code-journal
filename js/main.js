@@ -24,11 +24,43 @@ $form.addEventListener('click', (event) => {
     title: $formElements.title.value,
     'img-url': $formElements['img-url'].value,
     notes: $formElements.notes.value,
-    entryID: data.nextEntryId,
+    entryId: data.nextEntryId,
   };
   data.nextEntryId++;
   data.entries.unshift(responses);
-  dataToJSON();
+  writeData();
   $placeholderImg.setAttribute('src', 'images/placeholder-image-square.jpg');
   $form.reset();
 });
+// defining a function to create a DOM Tree
+function renderEntry(entry) {
+  const $li = document.createElement('li');
+  $li.className = 'row';
+  const $imgContainer = document.createElement('div');
+  $imgContainer.className = 'column-half';
+  const $img = document.createElement('img');
+  $img.setAttribute('src', entry['img-url']);
+  $img.setAttribute('alt', 'entry-image');
+  $img.className = 'entry-image';
+  $imgContainer.appendChild($img);
+  const $contentContainer = document.createElement('div');
+  $contentContainer.className = 'column-half entry-content';
+  const $entryTitle = document.createElement('h3');
+  $entryTitle.className = 'entry-title';
+  $entryTitle.textContent = entry.title;
+  const $entryNotes = document.createElement('p');
+  $entryNotes.textContent = entry.notes;
+  $contentContainer.append($entryTitle, $entryNotes);
+  $li.append($imgContainer, $contentContainer);
+  return $li;
+}
+// Adding an event listener to update the entries
+// document.addEventListener('DOMContentLoaded', () => {
+//   // querying the container to list entries
+//   const $entriesContainer = document.querySelector('#entries');
+//   if (!$entriesContainer) throw new Error('$entriesContainer query failed.');
+//   for (let i = 0; i < data.entries.length; i++) {
+//     const $entry = renderEntry(data.entries[i]);
+//     $entriesContainer.append($entry);
+//   }
+// });
