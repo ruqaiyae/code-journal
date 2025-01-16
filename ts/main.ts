@@ -11,32 +11,27 @@ interface EntryResponse {
   entryId: number;
 }
 
-const $form = document.querySelector('form');
+// querying img and placeholder img to update src
+const $imgURL = document.querySelector('#img-url');
 const $placeholderImg = document.querySelector('.placeholder-image');
 
-if (!$form) throw new Error('$formElements query failed.');
+if (!$imgURL) throw new Error('$imgURL query failed.');
 if (!$placeholderImg) throw new Error('$placeholderImg query failed.');
 
 // Adding an event listener to update Photo URL
-$form.addEventListener('input', (event: Event) => {
+$imgURL.addEventListener('input', (event: Event) => {
   const $eventTarget = event.target as HTMLInputElement;
-
-  if (!$eventTarget.matches('#img-url')) {
-    return;
-  }
 
   const $imgSrc = $eventTarget.value;
   $placeholderImg.setAttribute('src', $imgSrc);
 });
 
-// Adding an event listener to handle submit
-$form.addEventListener('click', (event: Event) => {
-  event.preventDefault();
+const $form = document.querySelector('form');
+if (!$form) throw new Error('$formElements query failed.');
 
-  const $eventTarget = event.target as HTMLFormElement;
-  if (!$eventTarget.matches('.submit-btn')) {
-    return;
-  }
+// Adding an event listener to handle submit
+$form.addEventListener('submit', (event: Event) => {
+  event.preventDefault();
 
   const $formElements = $form.elements as FormElements;
 
@@ -47,9 +42,17 @@ $form.addEventListener('click', (event: Event) => {
     entryId: data.nextEntryId,
   };
 
+  viewSwap('entries');
+
   data.nextEntryId++;
   data.entries.unshift(responses);
+
   writeData();
+
+  const entry = renderEntry(responses);
+  $entriesContainer?.prepend(entry);
+
+  toggleNoEntries();
 
   $placeholderImg.setAttribute('src', 'images/placeholder-image-square.jpg');
   $form.reset();
@@ -87,14 +90,63 @@ function renderEntry(entry: EntryResponse): HTMLElement {
   return $li;
 }
 
+// querying the container to list entries
+const $entriesContainer = document.querySelector('#entries-list');
+if (!$entriesContainer) throw new Error('$entriesContainer query failed.');
+
 // Adding an event listener to update the entries
 document.addEventListener('DOMContentLoaded', () => {
-  // querying the container to list entries
-  const $entriesContainer = document.querySelector('#entries');
-  if (!$entriesContainer) throw new Error('$entriesContainer query failed.');
-
   for (let i = 0; i < data.entries.length; i++) {
     const $entry = renderEntry(data.entries[i]);
     $entriesContainer.append($entry);
   }
+  viewSwap(data.view);
+  toggleNoEntries();
+});
+
+// Defining a function to hide no-record message
+function toggleNoEntries(): void {
+  const $noEntries = document.querySelector('.no-record');
+  if (!$noEntries) throw new Error('$noEntries query failed.');
+
+  if (data.entries.length !== 0) {
+    $noEntries.classList.add('hidden');
+  } else {
+    $noEntries.classList.remove('hidden');
+  }
+}
+
+// Defining a function to swap views
+function viewSwap(view: string): void {
+  const $entryForm = document.querySelector('.entry-form');
+  const $entries = document.querySelector('.entries');
+
+  if (!$entryForm) throw new Error('$entryForm query failed.');
+  if (!$entries) throw new Error('$entries query failed.');
+
+  if (view === 'entries') {
+    $entryForm.classList.add('hidden');
+    $entries.classList.remove('hidden');
+  } else {
+    $entries.classList.add('hidden');
+    $entryForm.classList.remove('hidden');
+  }
+  data.view = view;
+  writeData(); /* updating the view in local storage */
+}
+
+// Adding an event listener to "entries" in the header
+const $entriesElement = document.querySelector('.entries-link');
+if (!$entriesElement) throw new Error('$entriesElement query failed.');
+
+$entriesElement.addEventListener('click', () => {
+  viewSwap('entries');
+});
+
+// Adding an event listener to "NEW" btn
+const $newBtn = document.querySelector('.new-entry-btn');
+if (!$newBtn) throw new Error('$newBtn query failed.');
+
+$newBtn.addEventListener('click', () => {
+  viewSwap('entry-form');
 });

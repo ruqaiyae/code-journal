@@ -17,13 +17,13 @@
   </head>
   <body>
     <header>
-      <div class="container">
-        <h1 class="column-full main-heading">Code Journal</h1>
+      <div class="container row column-full main-header">
+        <h1 class="main-heading">Code Journal</h1>
+        <a class="entries-link">Entries</a>
       </div>
     </header>
     <main class="container">
-      <!-- <div data-view="entry-form"> -->
-      <div data-view="entry-form" class="hidden">
+      <div data-view="entry-form" class="entry-form">
         <h2 class="row column-full entry-main-heading">New Entry</h2>
 
         <form class="row">
@@ -67,12 +67,14 @@
           </div>
         </form>
       </div>
-      <!-- <div data-view="entries" class="hidden"> -->
-      <div data-view="entries">
-        <h2 class="row column-full entry-main-heading">Entries</h2>
+      <div data-view="entries" class="row column-full entries hidden">
+        <h2 class="col-same entry-main-heading">Entries</h2>
+        <div class="row col-same justify">
+          <a class="new-entry-btn">new</a>
+        </div>
         <p class="row column-full no-record">No entries have been recorded.</p>
 
-        <ul id="entries"></ul>
+        <ul id="entries-list"></ul>
       </div>
     </main>
     <script src="js/data.js"></script>
