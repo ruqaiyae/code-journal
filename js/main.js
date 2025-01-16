@@ -169,4 +169,26 @@ $entriesContainer.addEventListener('click', (event) => {
     $placeholderImg.setAttribute('src', data.editing['img-url']);
   }
   $editTitle.textContent = 'Edit Entry';
+  // querying the submit-btn-wrapper to add delete-entry element
+  const $submitBtnWrapper = document.querySelector('.submit-btn-wrapper');
+  if (!$submitBtnWrapper) throw new Error('$btnContainer query failed.');
+  // creating a DOM Tree for delete-entry-btn
+  /*  <div class='row column-full align btns-container'>
+        <div class='btn-col'>
+          <button class='delete-btn'>Delete Entry</button>
+        </div>
+        <div class='row btn-col justify submit-btn-wrapper'></div>
+      </div>
+  */
+  const $btnsContainer = document.createElement('div');
+  $btnsContainer.className = 'row column-full align btns-container';
+  const $deleteBtnWrapper = document.createElement('div');
+  $deleteBtnWrapper.className = 'btn-col';
+  const $deleteBtn = document.createElement('button');
+  $deleteBtn.className = 'delete-btn';
+  $deleteBtn.textContent = 'Delete Entry';
+  $deleteBtnWrapper.appendChild($deleteBtn);
+  $submitBtnWrapper.before($btnsContainer);
+  $btnsContainer.append($deleteBtnWrapper, $submitBtnWrapper);
+  $submitBtnWrapper.classList.replace('column-full', 'btn-col');
 });
