@@ -83,10 +83,6 @@ h3.entry-title {
   padding-top: 2rem;
 }
 
-.col-same {
-  width: 50%;
-}
-
 .new-entry-btn {
   background-color: #562b81;
   color: #fff;
@@ -96,6 +92,10 @@ h3.entry-title {
   margin: 0 0 0.5rem;
   border-radius: 0.2rem;
   justify-content: flex-end;
+}
+
+.pencil {
+  margin-top: 1.5rem;
 }
 
 @media only screen and (width >= 768px) {

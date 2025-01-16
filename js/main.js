@@ -23,11 +23,11 @@ $form.addEventListener('submit', (event) => {
     entryId: data.nextEntryId,
   };
   viewSwap('entries');
+  const entry = renderEntry(responses);
+  $entriesContainer?.prepend(entry);
   data.nextEntryId++;
   data.entries.unshift(responses);
   writeData();
-  const entry = renderEntry(responses);
-  $entriesContainer?.prepend(entry);
   toggleNoEntries();
   $placeholderImg.setAttribute('src', 'images/placeholder-image-square.jpg');
   $form.reset();
@@ -36,6 +36,7 @@ $form.addEventListener('submit', (event) => {
 function renderEntry(entry) {
   const $li = document.createElement('li');
   $li.className = 'row';
+  $li.setAttribute('data-entry-id', String(data.nextEntryId));
   const $imgContainer = document.createElement('div');
   $imgContainer.className = 'column-half';
   const $img = document.createElement('img');
@@ -44,13 +45,18 @@ function renderEntry(entry) {
   $img.className = 'entry-image';
   $imgContainer.appendChild($img);
   const $contentContainer = document.createElement('div');
-  $contentContainer.className = 'column-half entry-content';
+  $contentContainer.className = 'row column-half entry-content';
   const $entryTitle = document.createElement('h3');
-  $entryTitle.className = 'entry-title';
+  $entryTitle.className = 'entry-title col-90';
   $entryTitle.textContent = entry.title;
+  const $pencilContainer = document.createElement('div');
+  $pencilContainer.className = 'row col-10 justify pencil';
+  const $pencil = document.createElement('i');
+  $pencil.className = 'fa-solid fa-pencil';
+  $pencilContainer.appendChild($pencil);
   const $entryNotes = document.createElement('p');
   $entryNotes.textContent = entry.notes;
-  $contentContainer.append($entryTitle, $entryNotes);
+  $contentContainer.append($entryTitle, $pencilContainer, $entryNotes);
   $li.append($imgContainer, $contentContainer);
   return $li;
 }
