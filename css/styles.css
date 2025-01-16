@@ -94,8 +94,12 @@ h3.entry-title {
   justify-content: flex-end;
 }
 
-.pencil {
+.pencil-container {
   margin-top: 1.5rem;
+}
+
+.pencil-icon {
+  height: 1rem;
 }
 
 @media only screen and (width >= 768px) {

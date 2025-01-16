@@ -12,10 +12,10 @@ $imgURL.addEventListener('input', (event) => {
 });
 const $form = document.querySelector('form');
 if (!$form) throw new Error('$formElements query failed.');
+const $formElements = $form.elements;
 // Adding an event listener to handle submit
 $form.addEventListener('submit', (event) => {
   event.preventDefault();
-  const $formElements = $form.elements;
   const responses = {
     title: $formElements.title.value,
     'img-url': $formElements['img-url'].value,
@@ -34,9 +34,21 @@ $form.addEventListener('submit', (event) => {
 });
 // defining a function to create a DOM Tree
 function renderEntry(entry) {
+  /* <li class="row" data-entry-id= >
+        <div class="column-half">
+          <img src="" alt="entry-image" class="entry-image" />
+        </div>
+        <div class="row column-half entry-content">
+          <h3 class="entry-title col-90"></h3>
+          <div class="row col-10 justify pencil-container">
+            <i class="fa-solid fa-pencil pencil-icon"></i>
+          </div>
+          <p></p>
+          </div>
+      </li> */
   const $li = document.createElement('li');
   $li.className = 'row';
-  $li.setAttribute('data-entry-id', String(data.nextEntryId));
+  $li.setAttribute('data-entry-id', String(entry.entryId));
   const $imgContainer = document.createElement('div');
   $imgContainer.className = 'column-half';
   const $img = document.createElement('img');
@@ -50,9 +62,9 @@ function renderEntry(entry) {
   $entryTitle.className = 'entry-title col-90';
   $entryTitle.textContent = entry.title;
   const $pencilContainer = document.createElement('div');
-  $pencilContainer.className = 'row col-10 justify pencil';
+  $pencilContainer.className = 'row col-10 justify pencil-container';
   const $pencil = document.createElement('i');
-  $pencil.className = 'fa-solid fa-pencil';
+  $pencil.className = 'fa-solid fa-pencil pencil-icon';
   $pencilContainer.appendChild($pencil);
   const $entryNotes = document.createElement('p');
   $entryNotes.textContent = entry.notes;
@@ -109,4 +121,28 @@ const $newBtn = document.querySelector('.new-entry-btn');
 if (!$newBtn) throw new Error('$newBtn query failed.');
 $newBtn.addEventListener('click', () => {
   viewSwap('entry-form');
+});
+// Adding an event listener to the <ul> -> pencil-icon with event delegation
+$entriesContainer.addEventListener('click', (event) => {
+  const $eventTarget = event.target;
+  console.log($eventTarget);
+  if (!$eventTarget.matches('.pencil-icon')) {
+    return;
+  }
+  viewSwap('entry-form');
+  const $listItem = $eventTarget.closest('li');
+  const $itemID = Number($listItem?.dataset.entryId);
+  for (let i = 0; i < data.entries.length; i++) {
+    if (data.entries[i].entryId === $itemID) {
+      data.editing = data.entries[i];
+    }
+  }
+  if (data.editing) {
+    $formElements.title.value = data.editing.title;
+    $formElements['img-url'].value = data.editing['img-url'];
+    $formElements.notes.value = data.editing.notes;
+  }
+  const $editTitle = document.querySelector('.entry-main-heading');
+  if (!$editTitle) throw new Error('$editTitle query failed.');
+  $editTitle.textContent = 'Edit Entry';
 });
