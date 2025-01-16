@@ -18,6 +18,18 @@
   width: 100%;
 }
 
+.col-same {
+  width: 50%;
+}
+
+.col-90 {
+  width: 90%;
+}
+
+.col-10 {
+  width: 10%;
+}
+
 @media screen and (width >= 768px) {
   .container {
     max-width: 900px;

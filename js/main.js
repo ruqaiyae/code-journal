@@ -10,32 +10,71 @@ $imgURL.addEventListener('input', (event) => {
   const $imgSrc = $eventTarget.value;
   $placeholderImg.setAttribute('src', $imgSrc);
 });
+// querying the form to access form.elements
 const $form = document.querySelector('form');
 if (!$form) throw new Error('$formElements query failed.');
-// Adding an event listener to handle submit
+const $formElements = $form.elements;
+// querying the title to toggle between 'New Entry' and 'Edit Entry'
+const $editTitle = document.querySelector('.entry-main-heading');
+if (!$editTitle) throw new Error('$editTitle query failed.');
+// adding an event listener to handle submit
 $form.addEventListener('submit', (event) => {
   event.preventDefault();
-  const $formElements = $form.elements;
   const responses = {
     title: $formElements.title.value,
     'img-url': $formElements['img-url'].value,
     notes: $formElements.notes.value,
     entryId: data.nextEntryId,
   };
+  // adding a condition to check if it's a new entry or the user is editing an old entry
+  if (data.editing === null) {
+    const entry = renderEntry(responses);
+    $entriesContainer?.prepend(entry);
+    data.entries.unshift(responses);
+    data.nextEntryId++;
+  } else {
+    responses.entryId = data.editing.entryId;
+    // replacing the old object with the new object in the array
+    for (let i = 0; i < data.entries.length; i++) {
+      if (responses.entryId === data.entries[i].entryId) {
+        data.entries.splice(i, 1, responses);
+      }
+    }
+    // replacing the old DOM Tree with the updated DOM Tree
+    const entry = renderEntry(responses);
+    const $liList = document.querySelectorAll('li');
+    if (!$liList) throw new Error('$liList query failed');
+    for (let i = 0; i < $liList.length; i++) {
+      if ($liList[i].dataset.entryId === String(responses.entryId)) {
+        $liList[i].replaceWith(entry);
+      }
+    }
+    $editTitle.textContent = 'New Entry';
+    data.editing = null;
+  }
   viewSwap('entries');
-  data.nextEntryId++;
-  data.entries.unshift(responses);
   writeData();
-  const entry = renderEntry(responses);
-  $entriesContainer?.prepend(entry);
   toggleNoEntries();
   $placeholderImg.setAttribute('src', 'images/placeholder-image-square.jpg');
   $form.reset();
 });
 // defining a function to create a DOM Tree
 function renderEntry(entry) {
+  /* <li class="row" data-entry-id= >
+        <div class="column-half">
+          <img src="" alt="entry-image" class="entry-image" />
+        </div>
+        <div class="row column-half entry-content">
+          <h3 class="entry-title col-90"></h3>
+          <div class="row col-10 justify">
+            <i class="fa-solid fa-pencil pencil-icon"></i>
+          </div>
+          <p></p>
+          </div>
+      </li> */
   const $li = document.createElement('li');
   $li.className = 'row';
+  $li.setAttribute('data-entry-id', String(entry.entryId));
   const $imgContainer = document.createElement('div');
   $imgContainer.className = 'column-half';
   const $img = document.createElement('img');
@@ -44,13 +83,18 @@ function renderEntry(entry) {
   $img.className = 'entry-image';
   $imgContainer.appendChild($img);
   const $contentContainer = document.createElement('div');
-  $contentContainer.className = 'column-half entry-content';
+  $contentContainer.className = 'row column-half entry-content';
   const $entryTitle = document.createElement('h3');
-  $entryTitle.className = 'entry-title';
+  $entryTitle.className = 'entry-title col-90';
   $entryTitle.textContent = entry.title;
+  const $pencilContainer = document.createElement('div');
+  $pencilContainer.className = 'row col-10 justify';
+  const $pencil = document.createElement('i');
+  $pencil.className = 'fa-solid fa-pencil pencil-icon';
+  $pencilContainer.appendChild($pencil);
   const $entryNotes = document.createElement('p');
   $entryNotes.textContent = entry.notes;
-  $contentContainer.append($entryTitle, $entryNotes);
+  $contentContainer.append($entryTitle, $pencilContainer, $entryNotes);
   $li.append($imgContainer, $contentContainer);
   return $li;
 }
@@ -103,4 +147,26 @@ const $newBtn = document.querySelector('.new-entry-btn');
 if (!$newBtn) throw new Error('$newBtn query failed.');
 $newBtn.addEventListener('click', () => {
   viewSwap('entry-form');
+});
+// Adding an event listener to the <ul> -> pencil-icon with event delegation
+$entriesContainer.addEventListener('click', (event) => {
+  const $eventTarget = event.target;
+  if (!$eventTarget.matches('.pencil-icon')) {
+    return;
+  }
+  viewSwap('entry-form');
+  const $listItem = $eventTarget.closest('li');
+  const $itemID = Number($listItem?.dataset.entryId);
+  for (let i = 0; i < data.entries.length; i++) {
+    if (data.entries[i].entryId === $itemID) {
+      data.editing = data.entries[i];
+    }
+  }
+  if (data.editing) {
+    $formElements.title.value = data.editing.title;
+    $formElements['img-url'].value = data.editing['img-url'];
+    $formElements.notes.value = data.editing.notes;
+    $placeholderImg.setAttribute('src', data.editing['img-url']);
+  }
+  $editTitle.textContent = 'Edit Entry';
 });
