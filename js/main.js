@@ -69,11 +69,11 @@ function renderEntry(entry) {
           <div class="row col-10 justify">
             <i class="fa-solid fa-pencil pencil-icon"></i>
           </div>
-          <p></p>
+          <p class="entry-notes"></p>
           </div>
       </li> */
   const $li = document.createElement('li');
-  $li.className = 'row';
+  $li.className = 'row list-item';
   $li.setAttribute('data-entry-id', String(entry.entryId));
   const $imgContainer = document.createElement('div');
   $imgContainer.className = 'column-half';
@@ -90,9 +90,10 @@ function renderEntry(entry) {
   const $pencilContainer = document.createElement('div');
   $pencilContainer.className = 'row col-10 justify';
   const $pencil = document.createElement('i');
-  $pencil.className = 'fa-solid fa-pencil pencil-icon';
+  $pencil.className = 'fa-solid fa-pencil pencil-icon cursor';
   $pencilContainer.appendChild($pencil);
   const $entryNotes = document.createElement('p');
+  $entryNotes.className = 'entry-notes';
   $entryNotes.textContent = entry.notes;
   $contentContainer.append($entryTitle, $pencilContainer, $entryNotes);
   $li.append($imgContainer, $contentContainer);
@@ -110,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
   viewSwap(data.view);
   toggleNoEntries();
 });
-// Defining a function to hide no-record message
+// defining a function to hide no-record message
 function toggleNoEntries() {
   const $noEntries = document.querySelector('.no-record');
   if (!$noEntries) throw new Error('$noEntries query failed.');
@@ -120,18 +121,19 @@ function toggleNoEntries() {
     $noEntries.classList.remove('hidden');
   }
 }
-// Defining a function to swap views
+// querying the entry-form for view swap and appending the modal dialog
+const $entryForm = document.querySelector('.entry-form');
+if (!$entryForm) throw new Error('$entryForm query failed.');
+// defining a function to swap views
 function viewSwap(view) {
-  const $entryForm = document.querySelector('.entry-form');
   const $entries = document.querySelector('.entries');
-  if (!$entryForm) throw new Error('$entryForm query failed.');
   if (!$entries) throw new Error('$entries query failed.');
   if (view === 'entries') {
-    $entryForm.classList.add('hidden');
+    $entryForm?.classList.add('hidden');
     $entries.classList.remove('hidden');
   } else {
     $entries.classList.add('hidden');
-    $entryForm.classList.remove('hidden');
+    $entryForm?.classList.remove('hidden');
   }
   data.view = view;
   writeData(); /* updating the view in local storage */
@@ -146,6 +148,9 @@ $entriesElement.addEventListener('click', () => {
 const $newBtn = document.querySelector('.new-entry-btn');
 if (!$newBtn) throw new Error('$newBtn query failed.');
 $newBtn.addEventListener('click', () => {
+  $form.reset();
+  $placeholderImg.setAttribute('src', 'images/placeholder-image-square.jpg');
+  $deleteBtn.classList.add('hidden');
   viewSwap('entry-form');
 });
 // Adding an event listener to the <ul> -> pencil-icon with event delegation
@@ -169,26 +174,94 @@ $entriesContainer.addEventListener('click', (event) => {
     $placeholderImg.setAttribute('src', data.editing['img-url']);
   }
   $editTitle.textContent = 'Edit Entry';
-  // querying the submit-btn-wrapper to add delete-entry element
-  const $submitBtnWrapper = document.querySelector('.submit-btn-wrapper');
-  if (!$submitBtnWrapper) throw new Error('$btnContainer query failed.');
-  // creating a DOM Tree for delete-entry-btn
-  /*  <div class='row column-full align btns-container'>
-        <div class='btn-col'>
-          <button class='delete-btn'>Delete Entry</button>
-        </div>
-        <div class='row btn-col justify submit-btn-wrapper'></div>
+  $deleteBtn.classList.remove('hidden');
+});
+// querying the submit-btn-wrapper to add delete-entry element
+const $submitBtnWrapper = document.querySelector('.submit-btn-wrapper');
+if (!$submitBtnWrapper) throw new Error('$btnContainer query failed.');
+// creating a DOM Tree for delete-entry-btn
+/*  <div class="row column-full align btns-container">
+      <div class="btn-col">
+        <button class="delete-btn">Delete Entry</button>
       </div>
-  */
-  const $btnsContainer = document.createElement('div');
-  $btnsContainer.className = 'row column-full align btns-container';
-  const $deleteBtnWrapper = document.createElement('div');
-  $deleteBtnWrapper.className = 'btn-col';
-  const $deleteBtn = document.createElement('button');
-  $deleteBtn.className = 'delete-btn';
-  $deleteBtn.textContent = 'Delete Entry';
-  $deleteBtnWrapper.appendChild($deleteBtn);
-  $submitBtnWrapper.before($btnsContainer);
-  $btnsContainer.append($deleteBtnWrapper, $submitBtnWrapper);
-  $submitBtnWrapper.classList.replace('column-full', 'btn-col');
+      <div class="row btn-col justify submit-btn-wrapper"></div>
+    </div>
+*/
+const $btnsContainer = document.createElement('div');
+$btnsContainer.className = 'row column-full align btns-container';
+const $deleteBtnWrapper = document.createElement('div');
+$deleteBtnWrapper.className = 'btn-col';
+const $deleteBtn = document.createElement('button');
+$deleteBtn.className = 'delete-btn hidden cursor';
+$deleteBtn.setAttribute('type', 'button');
+$deleteBtn.textContent = 'Delete Entry';
+$deleteBtnWrapper.appendChild($deleteBtn);
+$submitBtnWrapper.before($btnsContainer);
+$btnsContainer.append($deleteBtnWrapper, $submitBtnWrapper);
+$submitBtnWrapper.classList.replace('column-full', 'btn-col');
+// creating a modal dialog
+/*  <dialog>
+          <p>Are you sure you want to delete this entry?</p>
+          <div class="row column-full align">
+            <div class="btn-col modal-cancel">
+              <button class="dismiss-modal">Cancel</button>
+            </div>
+            <div class="btn-col justify modal-confirm">
+              <button class="confirm-modal">Confirm</button>
+            </div>
+          </div>
+        </dialog>
+    */
+const $dialog = document.createElement('dialog');
+$dialog.className = 'delete-entry-dialog';
+const $container = document.createElement('div');
+$container.className = 'row column-full align';
+const $dialogText = document.createElement('p');
+$dialogText.className = 'row column-full dialog-text';
+$dialogText.textContent = 'Are you sure you want to delete this entry?';
+const $modalBtnsContainer = document.createElement('div');
+$modalBtnsContainer.className = 'row column-full align modal-btns-container';
+const $cancelBtnWrapper = document.createElement('div');
+$cancelBtnWrapper.className = 'btn-col modal-cancel';
+const $cancelBtn = document.createElement('button');
+$cancelBtn.className = 'dismiss-modal modal-btn cursor';
+$cancelBtn.textContent = 'cancel';
+$cancelBtnWrapper.appendChild($cancelBtn);
+const $confirmBtnWrapper = document.createElement('div');
+$confirmBtnWrapper.className = 'row btn-col justify modal-confirm';
+const $confirmBtn = document.createElement('button');
+$confirmBtn.className = 'confirm-modal modal-btn cursor';
+$confirmBtn.textContent = 'confirm';
+$confirmBtnWrapper.appendChild($confirmBtn);
+$modalBtnsContainer.append($cancelBtnWrapper, $confirmBtnWrapper);
+$container.append($dialogText, $modalBtnsContainer);
+$dialog.appendChild($container);
+$entryForm.appendChild($dialog);
+// adding an event listener to delete-entry-btn to show the modal dialog
+$deleteBtn.addEventListener('click', () => {
+  $dialog.showModal();
+});
+// adding an event listener to hide the model dialog
+$cancelBtn.addEventListener('click', () => {
+  $dialog.close();
+});
+// adding an event listener to confirm-delete
+$confirmBtn.addEventListener('click', () => {
+  if (data.editing) {
+    const $li = document.querySelectorAll('li');
+    for (let i = 0; i < $li.length; i++) {
+      if ($li[i].dataset.entryId === String(data.editing.entryId)) {
+        $li[i].remove();
+      }
+    }
+    for (let i = 0; i < data.entries.length; i++) {
+      if (data.entries[i].entryId === data.editing.entryId) {
+        data.entries.splice(i, 1);
+      }
+    }
+  }
+  writeData();
+  toggleNoEntries();
+  $dialog.close();
+  viewSwap('entries');
 });

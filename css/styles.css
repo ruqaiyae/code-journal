@@ -11,6 +11,10 @@ header {
   color: #fff;
 }
 
+.cursor {
+  cursor: pointer;
+}
+
 .main-header {
   align-items: center;
 }
@@ -18,10 +22,6 @@ header {
 .main-heading {
   font-size: 1.5rem;
   padding-right: 1rem;
-}
-
-.entries-link {
-  font-size: 1rem;
 }
 
 .placeholder-image {
@@ -81,6 +81,10 @@ h3.entry-title {
   margin: 0;
 }
 
+.list-item {
+  margin-bottom: 0.8rem;
+}
+
 .entry-image {
   width: 100%;
   border-radius: 0.5rem;
@@ -114,6 +118,38 @@ h3.entry-title {
   padding: 0;
 }
 
+.delete-entry-dialog {
+  border: 1rem;
+  border-radius: 0.3rem;
+  height: 8rem;
+  width: 20rem;
+}
+
+.dialog-text {
+  justify-content: center;
+}
+
+.modal-btns-container {
+  padding-top: 0.9rem;
+}
+
+.modal-btn {
+  text-transform: uppercase;
+  padding: 0.5rem 0.6rem;
+  border: none;
+  border-radius: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.dismiss-modal {
+  background-color: #b6b6b6;
+}
+
+.confirm-modal {
+  background-color: #dc2626;
+  color: #f0f0f0;
+}
+
 @media only screen and (width >= 768px) {
   .main-heading {
     font-size: 2.2rem;
@@ -139,5 +175,15 @@ h3.entry-title {
 
   .entries-link {
     font-size: 1.5rem;
+  }
+
+  .entry-notes {
+    overflow: hidden;
+  }
+
+  .delete-entry-dialog {
+    border-radius: 0.5rem;
+    height: 8.5rem;
+    width: 24rem;
   }
 }
