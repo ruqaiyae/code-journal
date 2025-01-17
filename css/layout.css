@@ -30,6 +30,18 @@
   width: 10%;
 }
 
+.btn-col {
+  width: 50%;
+}
+
+.justify {
+  justify-content: flex-end;
+}
+
+.align {
+  align-items: center;
+}
+
 @media screen and (width >= 768px) {
   .container {
     max-width: 900px;
